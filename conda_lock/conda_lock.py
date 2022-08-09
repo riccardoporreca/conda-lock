@@ -751,9 +751,9 @@ def create_lockfile_from_spec(
             content_hash=spec.content_hash(),
             channels=[c for c in spec.channels],
             platforms=spec.platforms,
-            sources=[
-                str(source.resolve()) for source in spec.sources
-            ] if lockfile_path.is_absolute() else [
+            sources=[str(source.resolve()) for source in spec.sources]
+            if lockfile_path.is_absolute()
+            else [
                 relative_path(lockfile_path.parent, source) for source in spec.sources
             ],
         ),

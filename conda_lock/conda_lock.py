@@ -939,7 +939,7 @@ def run_lock(
                     f" {[str(p) for p in DEFAULT_FILES]}.",
                     file=sys.stderr,
                 )
-        # always re-check in case no files from the lockfile were assigned 
+        # always re-check in case no files from the lockfile were assigned
         if len(environment_files) == 0:
             # bail out if we do not encounter any default .y(a)ml files
             candidates = [

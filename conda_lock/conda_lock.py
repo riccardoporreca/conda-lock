@@ -945,7 +945,7 @@ def run_lock(
             if len(environment_files) == 0:
                 print(
                     f"No files exist matching the defaults"
-                    f" ({[str(p.with_suffix('.y(a)ml')) for p in DEFAULT_FILES]})"
+                    f" ({[str(p.with_suffix('.y(a)ml')) for p in DEFAULT_FILES]}).",
                     file=sys.stderr,
                 )
                 sys.exit(1)

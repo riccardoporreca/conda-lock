@@ -900,7 +900,7 @@ def _render_lockfile_for_install(
 
 
 def run_lock(
-    environment_files: Optional[List[pathlib.Path]],
+    environment_files: List[pathlib.Path],
     *,
     conda_exe: Optional[str],
     platforms: Optional[List[str]] = None,
@@ -918,7 +918,7 @@ def run_lock(
     filter_categories: bool = False,
 ) -> None:
     # no environment files specified => from lockfile or defaults
-    if environment_files in None:
+    if len(environment_files) == 0:
         if lockfile_path.exists():
             lock_content = parse_conda_lock_file(lockfile_path)
             # reconstruct native paths
@@ -1138,6 +1138,11 @@ def lock(
     """
     logging.basicConfig(level=log_level)
 
+    # we need to distinguish between unspecified files and specified but same as default
+    # (while keeping the CLI default to have it in the --help)
+    if ctx.get_parameter_source("files") == click.core.ParameterSource.DEFAULT:
+        files = []
+
     # Set Pypi <--> Conda lookup file location
     if pypi_to_conda_lookup_file:
         set_lookup_location(pypi_to_conda_lookup_file)
@@ -1158,12 +1163,7 @@ def lock(
     else:
         virtual_package_spec = pathlib.Path(virtual_package_spec)
 
-    # we need to distinguish between unspecified files and specified but same as default
-    # (while keeping the CLI default to have it in the --help)
-    if ctx.get_parameter_source("files") == click.core.ParameterSource.DEFAULT:
-        files = None
-    else:
-        files = [pathlib.Path(file) for file in files]
+    files = [pathlib.Path(file) for file in files]
     extras_ = set(extras)
     lock_func = partial(
         run_lock,

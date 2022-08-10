@@ -930,7 +930,9 @@ def run_lock(
             # reconstruct native paths
             locked_environment_files = [
                 pathlib.Path(
-                    pathlib.PurePosixPath(lockfile_path).parent
+                    p if pathlib.Path(p).is_absolute
+                    else
+                    p.pathlib.PurePosixPath(lockfile_path).parent
                     / pathlib.PurePosixPath(p)
                 )
                 for p in lock_content.metadata.sources

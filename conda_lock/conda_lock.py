@@ -1140,6 +1140,17 @@ def lock(
     if pypi_to_conda_lookup_file:
         set_lookup_location(pypi_to_conda_lookup_file)
 
+    # bail out if we do not encounter the default file if no files were passed
+    if ctx.get_parameter_source("files") == click.core.ParameterSource.DEFAULT:
+        candidates = list(files)
+        candidates += [f.with_name(f.name.replace(".yml", ".yaml")) for f in candidates]
+        for f in candidates:
+            if f.exists():
+                break
+        else:
+            print(ctx.get_help())
+            sys.exit(1)
+
     if pdb:
         sys.excepthook = _handle_exception_post_mortem
 

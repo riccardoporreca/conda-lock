@@ -932,7 +932,7 @@ def run_lock(
                 pathlib.Path(p)
                 if pathlib.Path(p).is_absolute
                 else pathlib.Path(
-                    p.pathlib.PurePosixPath(lockfile_path).parent
+                    pathlib.PurePosixPath(lockfile_path).parent
                     / pathlib.PurePosixPath(p)
                 )
                 for p in lock_content.metadata.sources

@@ -1138,14 +1138,14 @@ def lock(
     """
     logging.basicConfig(level=log_level)
 
+    # Set Pypi <--> Conda lookup file location
+    if pypi_to_conda_lookup_file:
+        set_lookup_location(pypi_to_conda_lookup_file)
+
     # we need to distinguish between unspecified files and specified but same as default
     # (while keeping the CLI default to have it in the --help)
     if ctx.get_parameter_source("files") == click.core.ParameterSource.DEFAULT:
         files = []
-
-    # Set Pypi <--> Conda lookup file location
-    if pypi_to_conda_lookup_file:
-        set_lookup_location(pypi_to_conda_lookup_file)
 
     if pdb:
         sys.excepthook = _handle_exception_post_mortem

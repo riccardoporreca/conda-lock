@@ -940,7 +940,9 @@ def run_lock(
                 )
         else:
             # bail out if we do not encounter any default .y(a)ml files 
-            candidates = [p if p.exists() else p.with_suffix(".yaml") for p in DEFAULT_FILES]
+            candidates = [
+                p if p.exists() else p.with_suffix(".yaml") for p in DEFAULT_FILES
+            ]
             environment_files = [p for p in candidates if p.exists()]
             if len(environment_files) == 0:
                 print(

@@ -929,9 +929,10 @@ def run_lock(
             lock_content = parse_conda_lock_file(lockfile_path)
             # reconstruct native paths
             locked_environment_files = [
+                pathlib.Path(p)
+                if pathlib.Path(p).is_absolute
+                else
                 pathlib.Path(
-                    p if pathlib.Path(p).is_absolute
-                    else
                     p.pathlib.PurePosixPath(lockfile_path).parent
                     / pathlib.PurePosixPath(p)
                 )

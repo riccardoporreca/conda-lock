@@ -931,8 +931,7 @@ def run_lock(
             locked_environment_files = [
                 pathlib.Path(p)
                 if pathlib.Path(p).is_absolute
-                else
-                pathlib.Path(
+                else pathlib.Path(
                     p.pathlib.PurePosixPath(lockfile_path).parent
                     / pathlib.PurePosixPath(p)
                 )

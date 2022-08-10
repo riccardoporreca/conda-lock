@@ -939,7 +939,7 @@ def run_lock(
                     file=sys.stderr,
                 )
         else:
-            # bail out if we do not encounter any default .y(a)ml files 
+            # bail out if we do not encounter any default .y(a)ml files
             candidates = [
                 p if p.exists() else p.with_suffix(".yaml") for p in DEFAULT_FILES
             ]

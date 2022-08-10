@@ -900,7 +900,7 @@ def _render_lockfile_for_install(
 
 
 def run_lock(
-    environment_files: List[pathlib.Path],
+    environment_files: Optional[List[pathlib.Path]],
     *,
     conda_exe: Optional[str],
     platforms: Optional[List[str]] = None,
@@ -917,7 +917,8 @@ def run_lock(
     update: Optional[List[str]] = None,
     filter_categories: bool = False,
 ) -> None:
-    if environment_files == DEFAULT_FILES:
+    # no environment files specified => from lockfile or defaults
+    if environment_files in None:
         if lockfile_path.exists():
             lock_content = parse_conda_lock_file(lockfile_path)
             # reconstruct native paths
@@ -931,6 +932,7 @@ def run_lock(
             if all(p.exists() for p in locked_environment_files):
                 environment_files = locked_environment_files
             else:
+                environment_files = DEFAULT_FILES
                 missing = [p for p in locked_environment_files if not p.exists()]
                 print(
                     f"{lockfile_path} was created from {[str(p) for p in locked_environment_files]},"
@@ -1140,17 +1142,6 @@ def lock(
     if pypi_to_conda_lookup_file:
         set_lookup_location(pypi_to_conda_lookup_file)
 
-    # bail out if we do not encounter the default file if no files were passed
-    if ctx.get_parameter_source("files") == click.core.ParameterSource.DEFAULT:
-        candidates = list(files)
-        candidates += [f.with_name(f.name.replace(".yml", ".yaml")) for f in candidates]
-        for f in candidates:
-            if f.exists():
-                break
-        else:
-            print(ctx.get_help())
-            sys.exit(1)
-
     if pdb:
         sys.excepthook = _handle_exception_post_mortem
 
@@ -1167,7 +1158,12 @@ def lock(
     else:
         virtual_package_spec = pathlib.Path(virtual_package_spec)
 
-    files = [pathlib.Path(file) for file in files]
+    # we need to distinguish between unspecified files and specified but same as default
+    # (while keeping the CLI default to have it in the --help)
+    if ctx.get_parameter_source("files") == click.core.ParameterSource.DEFAULT:
+        files = None
+    else:
+        files = [pathlib.Path(file) for file in files]
     extras_ = set(extras)
     lock_func = partial(
         run_lock,
